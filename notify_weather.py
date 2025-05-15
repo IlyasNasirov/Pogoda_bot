@@ -12,7 +12,7 @@ async def send_notifications(bot):
     now = datetime.now()
     next_hour = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
     seconds_until_next_hour = int((next_hour - now).total_seconds())
-    await asyncio.sleep(seconds_until_next_hour)
+    await asyncio.sleep(seconds_until_next_hour+60)
     while True:
         hour = datetime.now().hour
         notifies = await rq.get_notifies(hour)
