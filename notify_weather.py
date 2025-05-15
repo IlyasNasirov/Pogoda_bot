@@ -9,12 +9,12 @@ from datetime import datetime, timedelta
 
 
 async def send_notifications(bot):
-    now = datetime.now()
+    now = datetime.now()+timedelta(hours=5)
     next_hour = (now + timedelta(hours=1)).replace(minute=0, second=0, microsecond=0)
     seconds_until_next_hour = int((next_hour - now).total_seconds())
     await asyncio.sleep(seconds_until_next_hour+60)
     while True:
-        hour = datetime.now().hour
+        hour = (datetime.now()+timedelta(hours=5)).hour
         notifies = await rq.get_notifies(hour)
 
         for notify in notifies:
@@ -35,7 +35,7 @@ async def send_notifications(bot):
             rain_line = f"*🌧 {template[lang]['chance_of_rain']}:* `{rain}%`\n" if rain > 0 else ""
             snow_line = f"*❄️ {template[lang]['chance_of_snow']}:* `{snow}%`" if snow > 0 else ""
 
-            now = datetime.now()
+            now = datetime.now()+timedelta(hours=5)
             day = template[lang][now.strftime("%A")]
             month = template[lang][now.strftime("%B")]
             date = f"{day}, {now.day} {month}"

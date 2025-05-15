@@ -102,7 +102,7 @@ async def weather_now(message: Message):
     rain_line = f"*🌧 {template[lang]['chance_of_rain']}:* `{rain}%`\n" if rain > 0 else ""
     snow_line = f"*❄️ {template[lang]['chance_of_snow']}:* `{snow}%`" if snow > 0 else ""
 
-    now = datetime.now()
+    now = datetime.now()+timedelta(hours=5)
     day = template[lang][now.strftime("%A")]
     month = template[lang][now.strftime("%B")]
     date = f"{day}, {now.day} {month}"
@@ -146,7 +146,7 @@ async def weather_tomorrow(message: Message):
     rain_line = f"*🌧 {template[lang]['chance_of_rain']}:* `{rain}%`\n" if rain > 0 else ""
     snow_line = f"*❄️ {template[lang]['chance_of_snow']}:* `{snow}%`" if snow > 0 else ""
 
-    date_tomorrow = datetime.now() + timedelta(days=1)
+    date_tomorrow = datetime.now()+timedelta(hours=5) + timedelta(days=1)
     day = template[lang][date_tomorrow.strftime("%A")]
     month = template[lang][date_tomorrow.strftime("%B")]
     date = f"{day}, {date_tomorrow.day} {month}"
@@ -312,7 +312,7 @@ async def handle_everything(message: Message):
         rain_line = f"*🌧 {template[lang]['chance_of_rain']}:* `{rain}%`\n" if rain > 0 else ""
         snow_line = f"*❄️ {template[lang]['chance_of_snow']}:* `{snow}%`" if snow > 0 else ""
 
-        now = datetime.now()
+        now = datetime.now()+timedelta(hours=5)
         day = template[lang][now.strftime("%A")]
         month = template[lang][now.strftime("%B")]
         date = f"{day}, {now.day} {month}"
