@@ -3,11 +3,14 @@ import os
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
+from dotenv import load_dotenv
 
 from handlers import router
 from models import init_db
 from notify_weather import send_notifications
 from sessions import clear_expired_sessions
+
+load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 

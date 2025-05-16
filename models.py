@@ -1,11 +1,18 @@
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import DeclarativeBase, relationship
-from sqlalchemy.ext.asyncio import AsyncAttrs
-from sqlalchemy import Column, Integer, String, ForeignKey
-import asyncio
+from sqlalchemy import String, ForeignKey, Integer
+from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
+from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 
-engine = create_async_engine("sqlite+aiosqlite:///./weather.db", echo=True)
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_NAME = os.getenv('DB_NAME')
+DB_PORT = os.getenv('DB_PORT')
+
+engine = create_async_engine(url=f'postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
 async_session = async_sessionmaker(engine)
 
 
@@ -15,22 +22,21 @@ class Base(AsyncAttrs, DeclarativeBase):
 
 class User(Base):
     __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    location = Column(String)
-    language = Column(String)
-    notifies = relationship('Notify', back_populates='user')
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(25), nullable=True)
+    location: Mapped[str] = mapped_column(String(50), nullable=True)
+    language: Mapped[str] = mapped_column(String[10], nullable=True)
+    notifies: Mapped[list['Notify']] = relationship(back_populates='user',cascade="all, delete-orphan")
 
 
 class Notify(Base):
     __tablename__ = 'notifies'
-    id = Column(Integer, primary_key=True)
-    hour = Column(Integer)
-    user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship('User', back_populates='notifies')
+    id: Mapped[int] = mapped_column(primary_key=True)
+    hour: Mapped[Integer] = mapped_column(Integer)
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    user: Mapped[User] = relationship(back_populates='notifies')
 
 
 async def init_db():
     async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
