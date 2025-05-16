@@ -365,7 +365,7 @@ async def delete_notify(callback: CallbackQuery):
     user_id = callback.from_user.id
     user = await get_session(user_id)
     lang = user['language']
-    hour = callback.data.split('_')[2]
+    hour = int(callback.data.split('_')[2])
     await rq.delete_notify(user_id, hour)
     await callback.answer(template[lang]['deleted'])
     await callback.message.edit_text(template[lang]['notify_menu'], reply_markup=await kb.my_notif_menu(user_id, lang))
